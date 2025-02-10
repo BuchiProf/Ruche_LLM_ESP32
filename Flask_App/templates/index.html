@@ -1,0 +1,100 @@
+{%extends "base.html"%}
+{%block content%}
+    <h1>Graphique à Lignes Multiples avec différents axes Y</h1>
+    
+    <!-- Canvas pour afficher le graphique -->
+    <canvas id="myChart" style="height:600;width: 100%;max-width:800"></canvas>
+
+    <!-- Script pour créer le graphique à lignes multiples avec axes Y différents -->
+    <script>
+        // Données de test (remplacez par vos propres données provenant de Flask)
+        const data = {
+            labels: {{d|tojson}},
+            datasets: [
+                {
+                    label: 'temp ext',
+                    data: {{t|tojson}},
+                    yAxisID: 'y-temp1',
+                    borderColor: 'rgb(54, 162, 235)',
+                    fill: false
+                },
+                {
+                    label: 'masse',
+                    data: {{m|tojson}},
+                    yAxisID: 'y-masse',
+                    borderColor: 'rgb(255, 99, 132)',
+                    fill: false
+                },
+                {
+                    label: 'temp int 1',
+                    data: {{t2|tojson}},
+                    yAxisID: 'y-temp2',
+                    borderColor: 'rgb(99, 255, 90)',
+                    fill: false
+                },
+                {
+                    label: 'temp int 2',
+                    data: {{t3|tojson}},
+                    yAxisID: 'y-temp3',
+                    borderColor: 'rgb(255, 10, 255)',
+                    fill: false
+                }
+            ]
+        };
+
+        // Configuration du graphique à lignes multiples avec axes Y différents
+        const config = {
+            type: 'line',
+            data: data,
+            options: {
+                
+                scales: 
+                
+                {
+                    
+            'y-temp1': {
+                               id: 'y-temp1', 
+                               type: 'linear', 
+                               position: 'left',
+                               suggestedMin: 0,
+                               ticks: {color: 'blue',
+                                       callback: function(value, index, values) {return value + '°C';} // Ajoutez l'unité '°C' à l'axe  
+                                        }
+                                },
+                                'y-temp2': {
+                               id: 'y-temp2', 
+                               type: 'linear', 
+                               position: 'left',
+                               suggestedMin: 0,
+                               ticks: {color: 'green',
+                                       callback: function(value, index, values) {return value + '°C';} // Ajoutez l'unité '°C' à l'axe  
+                                        }
+                                },
+                                'y-temp3': {
+                               id: 'y-temp3', 
+                               type: 'linear', 
+                               position: 'left',
+                               suggestedMin: 0,
+                               ticks: {color: 'purple',
+                                       callback: function(value, index, values) {return value + '°C';} // Ajoutez l'unité '°C' à l'axe  
+                                        }
+                                },
+                    'y-masse':
+                            { id: 'y-masse', 
+                            type: 'linear', 
+                            position: 'right',
+                            suggestedMin: 0,
+                            ticks: {color: 'red',
+                                    callback: function(value, index, values) {return value + 'g';} // Ajoutez l'unité 'g' à l'axe 
+                                     }  
+                        }
+                        
+                    }
+                }
+            };
+        
+
+        // Créer le graphique à lignes multiples avec axes Y différents
+        var myChart = new Chart(document.getElementById('myChart'), config);
+    </script>
+{%endblock%}
