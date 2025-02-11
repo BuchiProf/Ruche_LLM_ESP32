@@ -75,7 +75,8 @@ void setup() {
   Serial.println("Setup ESP32 to sleep for every " + String(TIME_TO_SLEEP) + " Seconds");
 
 // lecture batterie et renvoi de la valeur de la tension sur 12bits
-tension = map(analogRead(batterie), 0.0f, 4095.0f, 0, 4.2);
+// lecture batterie : map fonctionne avec des entiers
+tension = analogRead(batterie) * (4.2/4095.0);
 String charge = "B=" + String(tension);
 
 
