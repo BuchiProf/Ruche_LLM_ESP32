@@ -39,7 +39,7 @@ float calibration_factor = -450; //-450 pour cellule 5kg
 
 //lecture du pont diviseur de tension (charge batterie 4.2V) sur port analogique 33
 #define batterie 33
-float tauxCharge;
+float tension;
 
 /*******************
 *****SETUP**********
@@ -74,7 +74,7 @@ void setup() {
   esp_sleep_enable_timer_wakeup(TIME_TO_SLEEP * uS_TO_S_FACTOR);
   Serial.println("Setup ESP32 to sleep for every " + String(TIME_TO_SLEEP) + " Seconds");
 
-// lecture batterie
+// lecture batterie et renvoi de la valeur de la tension sur 12bits
 tension = map(analogRead(batterie), 0.0f, 4095.0f, 0, 4.2);
 String charge = "B=" + String(tension);
 
