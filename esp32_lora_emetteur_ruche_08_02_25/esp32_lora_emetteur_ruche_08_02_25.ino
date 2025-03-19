@@ -15,7 +15,7 @@
 
 #include <SPI.h>
 #include <LoRa.h> //https://github.com/sandeepmistry/arduino-LoRa
-#include "HX711.h"
+#include "HX711.h" //https://github.com/bogde/HX711
 #include <Adafruit_Sensor.h>
 #include <Adafruit_BME280.h>
 #include <Wire.h>
