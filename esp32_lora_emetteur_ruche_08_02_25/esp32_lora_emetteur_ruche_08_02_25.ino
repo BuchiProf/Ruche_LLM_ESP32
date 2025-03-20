@@ -11,7 +11,7 @@
 *********/
 //Préparation deepsleep
 #define uS_TO_S_FACTOR 1000000ULL /* Conversion factor for micro seconds to seconds */
-#define TIME_TO_SLEEP  900          /* Time ESP32 will go to sleep (in seconds) 1800s for 30 min*/
+#define TIME_TO_SLEEP  1800          /* Time ESP32 will go to sleep (in seconds) 1800s for 30 min*/
 
 #include <SPI.h>
 #include <LoRa.h> //https://github.com/sandeepmistry/arduino-LoRa
@@ -19,7 +19,12 @@
 #include <Adafruit_Sensor.h>
 #include <Adafruit_BME280.h>
 #include <Wire.h>
+#include <Adafruit_AHTX0.h>
 
+//temp et humi interieure AHT20
+Adafruit_AHTX0 aht;
+float tempAHT;
+float humAHT;
 // BME280 I2C
 Adafruit_BME280 bme;
 float temp;
@@ -29,8 +34,10 @@ float pres;
 #define LOADCELL_DOUT_PIN  12
 #define LOADCELL_SCK_PIN  4
 HX711 scale;
-float calibration_factor = -450; //-450 pour cellule 5kg
-//#define calibration_factor 22983 //valeur obtenue expérimentalement pese personne lidl
+//#define calibration_factor
+float calibration_factor = 22983; 
+//-450 pour cellule 5kg
+// 22983 valeur obtenue expérimentalement pese personne lidl
 
 //define the pins used by the transceiver module
 #define ss 5
@@ -86,7 +93,12 @@ String charge = "B=" + String(tension);
   scale.set_scale(calibration_factor); //Adjust to this calibration factor
   String masse = "M=" + String(scale.get_units(10)+252.0);
   
-
+// config et envoi AHT20 (temperature et humidité intérieures)
+sensors_event_t humidityAHT, temperatureAHT;
+aht.getEvent(&humidityAHT, &temperatureAHT);
+tempAHT = temperatureAHT.temperature;
+humAHT = humidityAHT.relative_humidity;
+String tempInt = "Ti=" + String(tempAHT) + ",Hi=" + String(humAHT);
 
 // config et envoi BME280
   temp = bme.readTemperature();
@@ -95,8 +107,9 @@ String charge = "B=" + String(tension);
   //concaténation des valeurs et envoi sour forme de texte
   String bme = "T=" + String(temp) + ",H=" + String(hum) + ",P=" + String(pres);
 
-//on envoie tout dans un paquet de la forme "B=42,M=420,T=24,H=42,P=420"
-String paquet = charge + "," + masse + "," + bme;
+//on envoie tout dans un paquet de la forme "B=42,M=420,T=24,H=42,P=420,Ti=26.5,Hi=64.2"
+String paquet = charge + "," + masse + "," + bme + "," + tempInt;
+
 envoiLoRa(paquet);
     
 /*on démarre le deepsleep*/
