@@ -74,19 +74,22 @@ void loop() {
       // Boucle pour extraire les sous-chaînes
       while ((endIndex = LoRaData.indexOf(',', startIndex)) != -1) {
             tabData[dataIndex] = LoRaData.substring(startIndex, endIndex);
-            //Serial.println(tabData[dataIndex]);
+            Serial.println(tabData[dataIndex]);
             dataIndex++;
             startIndex = endIndex + 1;
             }
   
         // Pour le dernier élément après la dernière virgule
         tabData[dataIndex] = LoRaData.substring(startIndex);
-        //Serial.println(tabData[dataIndex]);
+        Serial.println(tabData[dataIndex]);
 
 
          for (int i = 0; i <= dataIndex; i++) {
+              // si la donnée  à l'index i n'est pas vide et si les deux premier caracteres sont "B="
               if(tabData[i].length() > 0 && tabData[i].substring(0,2)=="B="){
+                //la valueur sera le reste de cette chaine de caractere à partir de l'indice 2
                 String value = tabData[i].substring(2);
+                //on associe la valeur au champ n°1 du channel de thingspeak
                 ThingSpeak.setField(1, value);
                 Serial.print("Pourcentage de batterie : ");
                 Serial.println(value);
@@ -100,19 +103,31 @@ void loop() {
               if(tabData[i].length() > 0 && tabData[i].substring(0,2)=="T="){
                 String value = tabData[i].substring(2);
                 ThingSpeak.setField(3, value);
-                Serial.print("Temperature : ");
+                Serial.print("Temperature exterieure : ");
                 Serial.println(value);
               }
               if(tabData[i].length() > 0 && tabData[i].substring(0,2)=="H="){
                 String value = tabData[i].substring(2);
                 ThingSpeak.setField(4, value);
-                Serial.print("Humidite : ");
+                Serial.print("Humidite exterieure : ");
                 Serial.println(value);
               }
               if(tabData[i].length() > 0 && tabData[i].substring(0,2)=="P="){
                 String value = tabData[i].substring(2);
                 ThingSpeak.setField(5, value);
                 Serial.print("Pression : ");
+                Serial.println(value);
+              }
+              if(tabData[i].length() > 0 && tabData[i].substring(0,3)=="Ti="){
+                String value = tabData[i].substring(3);
+                ThingSpeak.setField(6, value);
+                Serial.print("Temperature interieure : ");
+                Serial.println(value);
+              }
+              if(tabData[i].length() > 0 && tabData[i].substring(0,3)=="Hi="){
+                String value = tabData[i].substring(3);
+                ThingSpeak.setField(7, value);
+                Serial.print("Humidite interieure : ");
                 Serial.println(value);
               }
         }
