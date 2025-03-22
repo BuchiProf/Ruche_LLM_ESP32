@@ -1,21 +1,57 @@
 <!doctype html>
 <html lang="fr">
-	<head>
-		<meta charset="utf-8">
-		<meta http-equiv="X-UA-Compatible" content="IE=edge">
-    	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-		<title>La ruche</title>
-		<!-- Inclure la bibliothèque Chart.js -->
-		<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-	</head>
-	<body>
-	   
-        
-            
-            <h1>Un graphique avec les courbes de différentes informations</h1>
-        
-   
+
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}">
+	<title>index chart.js</title>
+	<style>
+        .container {
+            display: flex;
+            align-items: center;
+
+        }
+        .image {
+            margin : 10px;  /*Espace entre l'image et la liste */
+			height: 60px;
+        }
+		#chart-container {
+        width: 100%;
+        height: 500px; /* Fixez la hauteur ici */
+        position: relative;
+    }
+    #myChart {
+        width: 100%;
+        height: 100%;
+    }
+    </style>
+	<!-- Inclure la bibliothèque Chart.js -->
+	<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+	<!--on insère ci dessous le lien cdn de DATE FNS l'adapter de temps -->
+	<script
+		src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
+
+</head>
+
+<body>
+	<div class="container">
+        <img src="{{ url_for('static', filename='bee_marchal.png')}}" alt="logo des ruches du Marchal" class="image">
+
+	<ul>
+
+		<li><a href="{{ url_for('index_ruche') }}">Accueil</a></li>
+		<li><a href="{{ url_for('courbe_tension') }}">Evolution de la tension batterie</a></li>
+		
+		<li><a href="{{ url_for('courbe_masse') }}">Evolution de la masse</a></li>
+		<li><a href="{{ url_for('multi_courbe') }}">Température, humidité</a></li>
+	
+	</ul>
+	</div>
+
 	<hr>
-		{% block content%}{%endblock%}
-	</body>
+	{% block content%}{%endblock%}
+</body>
+
 </html>

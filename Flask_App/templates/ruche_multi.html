@@ -1,0 +1,129 @@
+{%extends "base.html"%} {%block content%}
+<h1>Evolution des données de température et d'humidité :</h1>
+<p>Température et humidité internes à la ruche ainsi que température et humidité à l'extérieur de la ruche</p>
+
+<!-- Canvas pour afficher le graphique -->
+<div id="chart-container">
+    <canvas id="myChart" ></canvas>
+</div>
+
+<!-- Script pour créer le graphique à lignes multiples avec axes Y différents -->
+<script>
+      // Fonction pour formater le titre du tooltip en x
+      function formatPopUpX(context) {
+          var date = context[0].parsed.x
+          return 'Date: ' + new Intl.DateTimeFormat('fr-FR', { dateStyle: 'full', timeStyle: 'short' }).format(date);
+      };
+      // Données de test (remplacez par vos propres données provenant de Flask)
+      const temp_ext = [
+          {%for dico in data %}
+      { x: new Date('{{dico.date}}'), y: {{ dico.temp_ext }} },
+      {% endfor %}
+      ];
+      const humi_int = [
+          {%for dico in data %}
+      { x: new Date('{{dico.date}}'), y: {{ dico.humi_int }} },
+      {% endfor %}
+      ];
+      const humi_ext = [
+          {%for dico in data %}
+      { x: new Date('{{dico.date}}'), y: {{ dico.humi_ext }} },
+      {% endfor %}
+      ];
+      const temp_int = [
+          {%for dico in data %}
+      { x: new Date('{{dico.date}}'), y: {{ dico.temp_int }} },
+      {% endfor %}
+  ];
+
+
+      const data = {
+          datasets: [
+              {
+                  label: 'Température ext',
+                  data: temp_ext,
+                  yAxisID: 'y-temp1',
+                  borderColor: 'rgb(54, 162, 235)',
+                  fill: false
+              },
+              {
+                  label: 'Température int',
+                  data: temp_int,
+                  yAxisID: 'y-temp1',
+                  borderColor: 'rgb(123, 25, 234)',
+                  fill: false
+              }
+              ,
+              {
+                  label: 'Humidité ext',
+                  data: humi_ext,
+                  yAxisID: 'y-humi',
+                  borderColor: 'rgb(255, 105, 30)',
+                  fill: false
+              },
+              {
+                  label: 'Humidité int',
+                  data: humi_int,
+                  yAxisID: 'y-humi',
+                  borderColor: 'rgb(255, 38, 171)',
+                  fill: false
+              }
+
+          ]
+      };
+
+      // Configuration du graphique à lignes multiples avec axes Y différents
+      const config = {
+          type: 'line',
+          data: data,
+          options: {
+              responsive: true, // Le graphique s'ajustera automatiquement à la taille du conteneur
+      maintainAspectRatio: false, // Ne pas conserver le rapport d'aspect initial
+              scales: {
+                  x: {
+                      type: 'time',
+                      time: {
+                          unit: 'hour',
+                          stepSize: 4,
+                          displayFormats: {
+                              hour: 'd MMM yy, HH:mm' // Format personnalisé https://date-fns.org/v2.25.0/docs/format
+                          }
+                      }
+                  },
+                  'y-temp1': {
+                      id: 'y-temp1',
+                      type: 'linear',
+                      position: 'left',
+                      suggestedMin: 0,
+                      ticks: {
+                          color: 'blue',
+                          callback: function (value, index, values) { return value + '°C'; } // Ajoutez l'unité '°C' à l'axe
+                      }
+                  },
+                  'y-humi': {
+                      id: 'y-humi',
+                      type: 'linear',
+                      position: 'right',
+                      suggestedMin: 0,
+                      ticks: {
+                          color: 'red',
+                          callback: function (value, index, values) { return value + '%'; } // Ajoutez l'unité '%' à l'axe
+                      }
+                  }
+
+              },
+              plugins: {
+                  tooltip: {
+                      callbacks: {
+                          title: formatPopUpX
+                      }
+                  }
+              }
+          }
+      };
+
+
+      // Créer le graphique à lignes multiples avec axes Y différents
+      var myChart = new Chart(document.getElementById('myChart'), config);
+</script>
+{%endblock%}

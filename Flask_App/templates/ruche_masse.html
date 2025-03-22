@@ -1,0 +1,93 @@
+{%extends "base.html"%}
+{%block content%}
+
+<h1>Evolution de la masse de la ruche</h1>
+
+<!-- Canvas pour afficher le graphique -->
+ <div id="chart-container">
+<canvas id="myChart" ></canvas>
+</div>
+<!--;max-width:600px-->
+<!-- Script pour créer le graphique en courbe avec Chart.js -->
+<script>
+ // Fonction pour formater le titre du tooltip en x
+ function formatPopUpX(context) {
+    var date = context[0].parsed.x
+      return 'Date: ' + new Intl.DateTimeFormat('fr-FR',{ dateStyle: 'full', timeStyle: 'short' }).format(date);
+    }
+
+ // Fonction pour formater le contenu du tooltip en y
+ function formatPopUpY(context) {
+      var label = context.dataset.label || '';
+      if (label) {
+        label += ': ';
+      }
+      label += context.parsed.y + 'V';
+      return label;
+    };
+
+    //formatage jinja des données
+    const mesData = [
+        {%for dico in data%}
+            {x: new Date('{{dico.date}}'), y: {{dico.masse}} },
+        {% endfor %}
+    ]
+    //setup de la courbe
+    const data = {
+
+        datasets: [{
+            label: 'Masse en grammes',
+            data: mesData,
+            fill: false,
+            borderColor: 'rgb(75, 192, 192)',
+            tension: 0.1
+        }]
+    };
+
+    // Configuration du graphique en courbe
+    const config_masse = {
+        type: 'line',
+        data: data,
+        options: {
+            scales: {
+                // on ajoute x...
+                x: {
+                    type: 'time',
+                    time: {
+                        unit: 'hour',
+                        stepSize: 3,
+                        displayFormats: {
+                            hour: 'd MMM yy, HH:mm'
+                            //day: 'd MMM y' // Format personnalisé https://date-fns.org/v2.25.0/docs/format
+                        }
+                    }
+                },
+                //...jusqu'ici
+                y: {
+                    beginAtZero: false,
+                    ticks: {
+                        // Include a g sign in the ticks
+                        callback: function (value, index, ticks) {
+                            return value.toFixed(2) + 'g';
+                        }
+                    }
+                }
+            },
+            responsive: true,
+            maintainAspectRatio: false
+        },
+        plugins: {
+          tooltip: {
+            callbacks: {
+                title: formatPopUpX,
+              label: formatPopUpY // Utiliser la fonction pour formater le contenu du tooltip
+            }
+          }
+        }
+
+    };
+
+    // Créer le graphique en courbe avec Chart.js
+    var myChart = new Chart(document.getElementById('myChart'), config_masse);
+</script>
+{%endblock%}
