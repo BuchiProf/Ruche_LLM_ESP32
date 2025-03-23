@@ -2,7 +2,7 @@
 from flask import Flask, render_template, request, jsonify, redirect, url_for
 from thingspeak import Thingspeak
 from config import Config
-import datetime
+from datetime import datetime
 
 #création de l'application
 app = Flask(__name__)
@@ -25,7 +25,10 @@ def courbe_tension():
         new_dico['date']=dico['created_at']
         new_dico['tension']=dico['field1']
         data.append(new_dico)
-    return render_template("ruche_tension.html", data = data)
+    tension = data[-1]['tension']
+    
+   
+    return render_template("ruche_tension.html", data = data, tension=tension)
 
 @app.route('/masse')
 def courbe_masse():
@@ -36,7 +39,8 @@ def courbe_masse():
         new_dico['date']=dico['created_at']
         new_dico['masse']=dico['field2']
         data.append(new_dico)
-    return render_template("ruche_masse.html", data = data)
+    masse = data[-1]['masse']
+    return render_template("ruche_masse.html", data = data, masse_actuelle = masse)
 
 @app.route('/multi')
 def multi_courbe():
@@ -50,8 +54,12 @@ def multi_courbe():
         new_dico['humi_int']=dico['field7']
         new_dico['humi_ext']=dico['field4']
         donnee.append(new_dico)
-
-    return render_template("ruche_multi.html", data=donnee)
+    dernier_dico = donnee[-1]
+    ti = dernier_dico['temp_int']
+    te = dernier_dico['temp_ext']
+    hi = dernier_dico['humi_int']
+    he = dernier_dico['humi_ext']
+    return render_template("ruche_multi.html", data=donnee, dernier_ti = ti, dernier_te = te, dernier_hi = hi, dernier_he = he)
 
 
 #lancement de l'application en mode debugage version Thonny

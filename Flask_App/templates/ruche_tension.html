@@ -2,6 +2,7 @@
 {%block content%}
 
 <h1>Evolution de la tension de la batterie</h1>
+<h3>Actuellement la tension est de {{tension}}V</h3>
 
 <!-- Canvas pour afficher le graphique -->
  <div id="chart-container">
@@ -66,7 +67,7 @@
                 y: {
                     beginAtZero: false,
                     ticks: {
-                        // Include a °C sign in the ticks
+                        // Include a V sign in the ticks
                         callback: function (value, index, ticks) {
                             return value.toFixed(2) + 'V';
                         }
