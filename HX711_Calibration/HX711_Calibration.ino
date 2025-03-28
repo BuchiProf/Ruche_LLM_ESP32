@@ -15,12 +15,12 @@ Le choix des broches numériques diffère
 
 #include "HX711.h" 
 
-#define LOADCELL_DOUT_PIN  12
-#define LOADCELL_SCK_PIN  4
+#define LOADCELL_DOUT_PIN  4
+#define LOADCELL_SCK_PIN  12
 
 HX711 scale;
 
-float calibration_factor = -450; //-450 pour cellule 5kg
+float calibration_factor = 22900; //-450 pour cellule 5kg
 
 void setup() {
   Serial.begin(9600);
@@ -45,7 +45,7 @@ void loop() {
 
   Serial.print("Lecture valeur à diviser : ");
   Serial.print(scale.get_units(10));
-  Serial.println(" g"); //Change this to kg and re-adjust the calibration factor if you follow SI units like a sane person
+  Serial.println(" kg"); //Change this to kg and re-adjust the calibration factor if you follow SI units like a sane person
   Serial.print(" calibration_factor: ");
   Serial.print(calibration_factor);
   Serial.println();
@@ -54,10 +54,10 @@ void loop() {
   if(Serial.available())
   {
     char temp = Serial.read();
-    if(temp == '+' || temp == 'a')
-      calibration_factor += 10;
-    else if(temp == '-' || temp == 'z')
-      calibration_factor -= 10;
+    if(temp == '+' || temp == 'p')
+      calibration_factor += 100;
+    else if(temp == '-' || temp == 'm')
+      calibration_factor -= 100;
   }
   delay(2000);
 }
