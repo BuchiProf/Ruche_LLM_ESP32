@@ -1,13 +1,13 @@
 #include <SPI.h>
-#include <Ethernet.h> // ou ethernet2.h selon type de shield
-#include <RH_RF95.h> //bibliothèque RadioHead de Mike McCauley
+#include <Ethernet.h>
+#include <RH_RF95.h>
 
-// Paramètres Ethernet à modifier
+// Paramètres Ethernet
 byte mac[] = { 0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0xED };
 IPAddress ip(192, 168, 1, 177);
 EthernetClient client;
 
-// Paramètres ThingSpeak à modifier
+// Paramètres ThingSpeak
 const char* server = "api.thingspeak.com";
 String writeAPIKey = "VOTRE_API_KEY";
 const int updateThingSpeakInterval = 20 * 1000; // Intervalle de mise à jour en millisecondes
@@ -126,7 +126,7 @@ float lireHumidite() {
 }
 
 float extraireTemperature(uint8_t* buf, uint8_t len) {
-   // Convertir le buffer en chaîne de caractères  si la chaine envoyé est du type "T=26,H=85"
+  // Convertir le buffer en chaîne de caractères d'une chaîne de caractères au format "T=26,H=85"
   String data = String((char*)buf);
 
   // Trouver la position de "T="
@@ -143,7 +143,7 @@ float extraireTemperature(uint8_t* buf, uint8_t len) {
 }
 
 float extraireHumidite(uint8_t* buf, uint8_t len) {
-  // Convertir le buffer en chaîne de caractères si la chaine envoyé est du type "T=26,H=85"
+  // Convertir le buffer en chaîne de caractères d'une chaîne de caractères au format "T=26,H=85"
   String data = String((char*)buf);
 
   // Trouver la position de "H="
