@@ -3,6 +3,7 @@ from flask import Flask, render_template, request, jsonify, redirect, url_for
 from thingspeak import Thingspeak
 from config import Config
 from datetime import datetime
+from math import nan
 
 #création de l'application
 app = Flask(__name__)
@@ -37,14 +38,18 @@ def courbe_masse():
     for dico in data_brute['feeds']:
         new_dico ={}
         new_dico['date']=dico['created_at']
+        
         new_dico['masse']=dico['field2']
-        data.append(new_dico)
+        if dico['field3'] is not None:
+            data.append(new_dico)
     masse = data[-1]['masse']
+    #data = data[:len(data)//2]
     return render_template("ruche_masse.html", data = data, masse_actuelle = masse)
 
 @app.route('/multi')
 def multi_courbe():
     data_brute = ts.get_24heures()
+    
     donnee = []
     for dico in data_brute['feeds']:
         new_dico ={}
@@ -53,12 +58,18 @@ def multi_courbe():
         new_dico['temp_ext']=dico['field3']
         new_dico['humi_int']=dico['field7']
         new_dico['humi_ext']=dico['field4']
-        donnee.append(new_dico)
+        #ne pas enregistrer les données qui sont vides
+        if dico['field6'] is not None and dico['field4'] is not None and dico['field3'] is not None and dico['field7'] is not None :
+            donnee.append(new_dico)
+    
+    
     dernier_dico = donnee[-1]
     ti = dernier_dico['temp_int']
     te = dernier_dico['temp_ext']
     hi = dernier_dico['humi_int']
     he = dernier_dico['humi_ext']
+    
+    
     return render_template("ruche_multi.html", data=donnee, dernier_ti = ti, dernier_te = te, dernier_hi = hi, dernier_he = he)
 
 

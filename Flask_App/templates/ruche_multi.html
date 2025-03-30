@@ -5,6 +5,7 @@
 <p>Actuellement le température extérieure est de {{dernier_te}}°C et l'humidité relative de {{dernier_he}}%</p>
 <p>Actuellement le température dans la ruche est de {{dernier_ti}}°C et l'humidité relative de {{dernier_hi}}%</p>
 <!-- Canvas pour afficher le graphique -->
+
 <div id="chart-container">
     <canvas id="myChart" ></canvas>
 </div>
@@ -79,6 +80,7 @@
           type: 'line',
           data: data,
           options: {
+                spanGaps: true, // ignorer les valeurs NaN
               responsive: true, // Le graphique s'ajustera automatiquement à la taille du conteneur
       maintainAspectRatio: false, // Ne pas conserver le rapport d'aspect initial
               scales: {
