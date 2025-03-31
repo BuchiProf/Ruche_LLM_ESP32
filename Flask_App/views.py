@@ -61,16 +61,30 @@ def multi_courbe():
         #ne pas enregistrer les données qui sont vides
         if dico['field6'] is not None and dico['field4'] is not None and dico['field3'] is not None and dico['field7'] is not None :
             donnee.append(new_dico)
-    
-    
     dernier_dico = donnee[-1]
     ti = dernier_dico['temp_int']
     te = dernier_dico['temp_ext']
     hi = dernier_dico['humi_int']
     he = dernier_dico['humi_ext']
-    
-    
     return render_template("ruche_multi.html", data=donnee, dernier_ti = ti, dernier_te = te, dernier_hi = hi, dernier_he = he)
+
+@app.route('/masse_temp')
+def multi_masse_temp():
+    data_brute = ts.get_24heures()
+    
+    donnee = []
+    for dico in data_brute['feeds']:
+        new_dico ={}
+        new_dico['date']=dico['created_at']
+        new_dico['temp_ext']=dico['field3']
+        new_dico['masse']=dico['field2']
+        #ne pas enregistrer les données qui sont vides
+        if dico['field3'] is not None and dico['field2'] is not None :
+            donnee.append(new_dico)
+    dernier_dico = donnee[-1]
+    te = dernier_dico['temp_ext']
+    m = dernier_dico['masse']
+    return render_template("ruche_temp_masse.html", data=donnee, dernier_te = te, masse_actuelle = m)
 
 
 #lancement de l'application en mode debugage version Thonny

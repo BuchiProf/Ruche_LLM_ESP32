@@ -1,0 +1,111 @@
+{%extends "base.html"%} {%block content%}
+<h1>Evolution des données de masse et de température :</h1>
+<h3>Masse et température </h3>
+<br>
+<p>Actuellement le température extérieure est de {{dernier_te}}°C et la masse est de {{masse_actuelle}}kg</p>
+
+<!-- Canvas pour afficher le graphique -->
+
+<div id="chart-container">
+    <canvas id="myChart" ></canvas>
+</div>
+
+<!-- Script pour créer le graphique à lignes multiples avec axes Y différents -->
+<script>
+      // Fonction pour formater le titre du tooltip en x
+      function formatPopUpX(context) {
+          var date = context[0].parsed.x
+          return 'Date: ' + new Intl.DateTimeFormat('fr-FR', { dateStyle: 'full', timeStyle: 'short' }).format(date);
+      };
+      // Données de test (remplacez par vos propres données provenant de Flask)
+      const temp_ext = [
+          {%for dico in data %}
+      { x: new Date('{{dico.date}}'), y: {{ dico.temp_ext }} },
+      {% endfor %}
+      ];
+      const masse = [
+          {%for dico in data %}
+      { x: new Date('{{dico.date}}'), y: {{ dico.masse }} },
+      {% endfor %}
+      ]
+  ;
+
+
+      const data = {
+          datasets: [
+              {
+                  label: 'Température ext',
+                  data: temp_ext,
+                  yAxisID: 'y-temp1',
+                  borderColor: 'rgb(54, 162, 235)',
+                  fill: false
+              },
+              
+              {
+                  label: 'Masse',
+                  data: masse,
+                  yAxisID: 'y-humi',
+                  borderColor: 'rgb(255, 105, 30)',
+                  fill: false
+              }
+
+          ]
+      };
+
+      // Configuration du graphique à lignes multiples avec axes Y différents
+      const config = {
+          type: 'line',
+          data: data,
+          options: {
+                spanGaps: true, // ignorer les valeurs NaN
+              responsive: true, // Le graphique s'ajustera automatiquement à la taille du conteneur
+      maintainAspectRatio: false, // Ne pas conserver le rapport d'aspect initial
+              scales: {
+                  x: {
+                      type: 'time',
+                      time: {
+                          unit: 'hour',
+                          stepSize: 4,
+                          displayFormats: {
+                              hour: 'd MMM yy, HH:mm' // Format personnalisé https://date-fns.org/v2.25.0/docs/format
+                          }
+                      }
+                  },
+                  'y-temp1': {
+                      id: 'y-temp1',
+                      type: 'linear',
+                      position: 'left',
+                      suggestedMin: 0,
+                      ticks: {
+                          color: 'blue',
+                          callback: function (value, index, values) { return value + '°C'; } // Ajoutez l'unité '°C' à l'axe
+                      }
+                  },
+                  'y-humi': {
+                      id: 'y-humi',
+                      type: 'linear',
+                      position: 'right',
+                      beginAtZero: false,
+                      //suggestedMin: 0,
+                      ticks: {
+                          color: 'red',
+                          callback: function (value, index, values) { return value.toFixed(2) + 'kg'; } // Ajoutez l'unité '%' à l'axe
+                      }
+                  }
+
+              },
+              plugins: {
+                  tooltip: {
+                      callbacks: {
+                          title: formatPopUpX
+                      }
+                  }
+              }
+          }
+      };
+
+
+      // Créer le graphique à lignes multiples avec axes Y différents
+      var myChart = new Chart(document.getElementById('myChart'), config);
+</script>
+{%endblock%}
