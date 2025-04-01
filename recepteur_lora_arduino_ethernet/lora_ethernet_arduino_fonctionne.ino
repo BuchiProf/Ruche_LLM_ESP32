@@ -11,7 +11,7 @@ byte mac[] = SECRET_MAC;
 IPAddress ip(10, 129, 230, 3);
 IPAddress myDns(10, 129, 253, 222);
 // Paramètres Proxy
-const char* proxyServer = "10.129.254.254"; // Adresse du proxy
+const char* proxyServer = SECRET_PROXY; // Adresse du proxy
 int proxyPort = 3128; // Port du proxy
 
 EthernetClient client;
